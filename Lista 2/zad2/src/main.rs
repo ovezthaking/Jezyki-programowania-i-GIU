@@ -1,4 +1,4 @@
-//1. Uzupełnij miejsca wykropkowane tak, aby poniższy kod działał prawidłowo.
+//2. Dla struktury z poprzedniego zadania zaimplementuj trait std::Display.
 use std::f64::consts::PI;
 use Fig::*;
 use std::fmt;

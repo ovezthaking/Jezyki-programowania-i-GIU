@@ -1,0 +1,4 @@
+Koło 1.5
+Prostokąt 2 1
+Kwadrat 5
+Romb 3 2.0943951023931953
