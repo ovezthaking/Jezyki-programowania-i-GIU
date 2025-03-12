@@ -3,13 +3,13 @@ fn main() {
     
     //a)
     let sum_t = sum(&t);
-    println!("Suma wartości w tablicy t: {}",sum_t);
+    println!("Suma wartości w tablicy t: {}", sum_t);
     //b)
     let asc_t = max_ascend(&t);
-    println!("Najdłuższy ciąg rosnący w tablicy t: {:?}",asc_t);
+    println!("Najdłuższy ciąg rosnący w tablicy t: {:?}", asc_t);
     //c
     accumulate(&mut t);
-    println!("Tablica t po modyfikacji: {:?}",t);
+    println!("Tablica t po modyfikacji akumulacji: {:?}", t);
 }
 
 //a)
@@ -25,7 +25,7 @@ fn sum(t: &[i32]) -> i32 {
 //b)
 fn max_ascend(t: &[i32]) -> &[i32] {
     if t.is_empty() {
-        return &[]; // Jeśli tablica jest pusta, zwróć pusty wycinek
+        return &[]; // Jeśli pusta, zwróć pusty
     }
 
     let mut max_start = 0; // Początek maxa
@@ -59,7 +59,9 @@ fn accumulate(t: &mut [i32]){
             t[i] += t[i-1];
         }
         if i > 1{
-            t[i] += t[i-1] + t[i-2];
+            for j in 0..i{
+                t[i] += t[j];
+            }
         }
         
         //println!("{}", t[i]);
