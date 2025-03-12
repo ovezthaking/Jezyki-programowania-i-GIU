@@ -1,1 +1,1 @@
-/home/oliwer/Pulpit/CargoWhat/zad2_test/target/debug/zad2_test: /home/oliwer/Pulpit/CargoWhat/zad2_test/src/main.rs
+/home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista\ 1/zad2/target/debug/zad2_test: /home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista\ 1/zad2/src/main.rs
