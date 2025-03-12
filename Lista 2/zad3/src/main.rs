@@ -11,7 +11,7 @@ use Fig::*;
 use std::fmt;
 use std::fs::File;
 use std::io::Write;
-use std::io::Read;
+//use std::io::Read;
 use std::io::{self, BufRead};
 use std::path::Path;
 
@@ -91,17 +91,20 @@ fn obwód(f: &Fig) -> f64 {
    }
 }
 
-fn obrót90(f: &mut Fig) -> f64 {
-   match f {
-       Koło {r: _} => 0.0,
-       Prost {a, b} => {let tmp = *a; *a = *b; *b = tmp; tmp},
-       Kwadr {a: _} => 0.0,
-       Romb {a: _, alfa} => {
-           *alfa = ((*alfa + PI) / 2.0) % (2.0 * PI);
-           ((*alfa + PI) / 2.0) % (2.0 * PI)},
-       
-   }
-}
+fn obrót90(f: &mut Fig) {
+    match f {
+        Koło {r: _} => (),
+        Prost {a, b} => {
+         let tmp = *a; 
+         *a = *b; 
+         *b = tmp;
+     },
+        Kwadr {a: _} => (),
+        Romb {a: _, alfa} => {
+            *alfa = ((*alfa + PI) / 2.0) % (2.0 * PI);
+         }
+     }
+ }
 
 fn main(){
    let mut figury = [Koło { r: 1.5 }, Prost { a: 1.0, b: 2.0 },
@@ -126,6 +129,6 @@ fn main(){
     let figury1 = load("figury.txt");
 
     
-    println!("\nfiguty1: {:?}", figury1);
+    println!("\nfigury1: {:?}", figury1);
    //println!("\n\n{:?}",format!("{:?}", figury));
 }
