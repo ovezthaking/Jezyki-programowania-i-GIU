@@ -41,7 +41,7 @@ impl Add for Poly{
     type Output = Self;
 
     fn add(self, other: Self) -> Self{
-    let mut output_wek = vec![];
+        let mut output_wek;
         if self.a.len() >= other.a.len() {
             output_wek = vec![0.0; self.a.len()];
             for i in 0..self.a.len()  {
@@ -64,6 +64,36 @@ impl Add for Poly{
     }
     
 }
+
+impl Sub for Poly{
+    type Output = Self;
+
+    fn sub(self, other: Self) -> Self{
+        let mut output_vec: Vec<f32>;
+        if self.a.len() >= other.a.len(){
+            output_vec = vec![0.0; self.a.len()];
+            for i in 0..output_vec.len(){
+                output_vec[i] += self.a[i];
+            }
+            for i in 0..other.a.len(){
+                output_vec[i] -= other.a[i];
+            }
+        }
+        else{
+            output_vec = vec![0.0; other.a.len()];
+            for i in 0..self.a.len(){
+                output_vec[i] += self.a[i];
+            }
+            for i in 0..other.a.len(){
+                output_vec[i] -= other.a[i];
+            }
+        }
+        Poly {a: output_vec}
+    }
+}
+
+
+
 
 fn main() {
     let wiel1 = Poly{a: vec![1.0, 3.0, 4.0]};
@@ -89,7 +119,7 @@ fn main() {
     println!("{:?}", &wiel1.a);
     println!("{:?}", &wiel2.a);
 
-    let wiel3 = wiel2 + wiel1;
+    let wiel3 = wiel1 - wiel2;
     println!("{:?}", wiel3.a);
 
 
