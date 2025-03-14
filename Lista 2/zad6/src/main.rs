@@ -15,7 +15,7 @@ Dobra to myślę, że taki wektor chyba musi być w formie [...,a,b,c], gdzie W(
 A może tak: W(x) = a* x^0 + b * x^1 + c * x^2 ...
 i niech forma będzie [a,b,c,...]
 */
-use std::ops::{Add, Mul, Sub};
+use std::{ops::{Add, Mul, Sub}, vec};
 
 
 #[derive(Clone)]
@@ -37,8 +37,37 @@ impl Poly{
     }
 }
 
+impl Add for Poly{
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self{
+    let mut output_wek = vec![];
+        if self.a.len() >= other.a.len() {
+            output_wek = vec![0.0; self.a.len()];
+            for i in 0..self.a.len()  {
+                output_wek[i] += self.a[i];
+            }
+            for i in 0..other.a.len(){
+                output_wek[i] += other.a[i];
+            }
+        }
+        else{
+            output_wek = vec![0.0; other.a.len()];
+            for i in 0..other.a.len() {
+                output_wek[i] += other.a[i];
+            }
+            for i in 0..self.a.len(){
+                output_wek[i] += self.a[i];
+            }
+        }
+        Poly {a: output_wek}
+    }
+    
+}
+
 fn main() {
     let wiel1 = Poly{a: vec![1.0, 3.0, 4.0]};
+    let wiel2 = Poly{a: vec![2.0, 4.0, 5.0, 6.0]};
     //println!("{:?}", wiel1.a);
     //let wek = [2,4,6,2,4,7];
     //let wek = wiel.a();
@@ -57,6 +86,12 @@ fn main() {
     */
 
     println!("{}", &wiel1.eval(2.0));
+    println!("{:?}", &wiel1.a);
+    println!("{:?}", &wiel2.a);
+
+    let wiel3 = wiel2 + wiel1;
+    println!("{:?}", wiel3.a);
+
 
 
 }
@@ -74,4 +109,26 @@ for i = 0 in wektor_wielomianow{
     x += 
 }
 
+*/
+
+
+/* 
+impl Add for Poly{
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        let max_len = self.a.len().max(other.a.len());
+        let mut output_wek = vec![0.0; max_len];
+
+        for i in 0..self.a.len() {
+            output_wek[i] += self.a[i];
+        }
+
+        for i in 0..other.a.len() {
+            output_wek[i] += other.a[i];
+        }
+
+        Poly { a: output_wek }
+    }
+}
 */
