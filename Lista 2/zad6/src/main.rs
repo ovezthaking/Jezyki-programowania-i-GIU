@@ -24,7 +24,26 @@ struct Poly{
 }
 
 impl Poly{
-    fn eval(&self, x:f32) -> f32{
+    fn eval(&self, x:f32) -> f32{/* 
+        impl Add for Poly{
+            type Output = Self;
+        
+            fn add(self, other: Self) -> Self {
+                let max_len = self.a.len().max(other.a.len());
+                let mut output_wek = vec![0.0; max_len];
+        
+                for i in 0..self.a.len() {
+                    output_wek[i] += self.a[i];
+                }
+        
+                for i in 0..other.a.len() {
+                    output_wek[i] += other.a[i];
+                }
+        
+                Poly { a: output_wek }
+            }
+        }
+        */
         let mut sum = 0.0;
         let wek = &self.a;
         for i in 0..wek.len() {
@@ -92,12 +111,26 @@ impl Sub for Poly{
     }
 }
 
+impl Mul for Poly{
+    type Output = Self;
 
+    fn mul(self, other:Self) -> Self{
+        let mut output_vec = vec![0.0; self.a.len() + other.a.len() - 1];
+        for i in 0..self.a.len(){
+            for j in 0..other.a.len(){
+                output_vec[i+j] += self.a[i] * other.a[j];
+                //println!("{}", i);
+                //print!("{}", j);
+            }
+        }
+        Poly {a: output_vec}
+    }
+}
 
 
 fn main() {
-    let wiel1 = Poly{a: vec![1.0, 3.0, 4.0]};
-    let wiel2 = Poly{a: vec![2.0, 4.0, 5.0, 6.0]};
+    let wiel1 = Poly{a: vec![1.0, 2.0]};
+    let wiel2 = Poly{a: vec![4.0, -3.0, 1.0]};
     //println!("{:?}", wiel1.a);
     //let wek = [2,4,6,2,4,7];
     //let wek = wiel.a();
@@ -116,11 +149,15 @@ fn main() {
     */
 
     println!("{}", &wiel1.eval(2.0));
-    println!("{:?}", &wiel1.a);
-    println!("{:?}", &wiel2.a);
+    println!("W1 = {:?}", &wiel1.a);
+    println!("W2 = {:?}", &wiel2.a);
 
-    let wiel3 = wiel1 - wiel2;
-    println!("{:?}", wiel3.a);
+    let wiel3 = wiel1.clone() - wiel2.clone();
+    
+    println!("{:?}", &wiel3.a);
+
+    let wiel4 = wiel1 * wiel2;
+    println!("{:?}", &wiel4.a);
 
 
 
@@ -142,23 +179,3 @@ for i = 0 in wektor_wielomianow{
 */
 
 
-/* 
-impl Add for Poly{
-    type Output = Self;
-
-    fn add(self, other: Self) -> Self {
-        let max_len = self.a.len().max(other.a.len());
-        let mut output_wek = vec![0.0; max_len];
-
-        for i in 0..self.a.len() {
-            output_wek[i] += self.a[i];
-        }
-
-        for i in 0..other.a.len() {
-            output_wek[i] += other.a[i];
-        }
-
-        Poly { a: output_wek }
-    }
-}
-*/
