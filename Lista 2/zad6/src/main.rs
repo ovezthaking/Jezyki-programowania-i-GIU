@@ -152,6 +152,8 @@ fn main() {
     println!("W1 = {:?}", &wiel1.a);
     println!("W2 = {:?}", &wiel2.a);
 
+    let wiel5 = wiel1.clone() + wiel2.clone();
+    println!("{:?}", &wiel5.a);
     let wiel3 = wiel1.clone() - wiel2.clone();
     
     println!("{:?}", &wiel3.a);
