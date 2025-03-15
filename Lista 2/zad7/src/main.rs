@@ -8,11 +8,45 @@ A może tak: W(x) = a* x^0 + b * x^1 + c * x^2 ...
 i niech forma będzie [a,b,c,...]
 */
 use std::{ops::{Add, Mul, Sub}, vec};
-
+use std::fmt;
 
 #[derive(Clone)]
 struct Poly{
     a: Vec<f32> //wektor współczynników wielomianu
+}
+
+
+impl fmt::Display for Poly{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result{
+        for v in (0..self.a.len()).rev(){
+            
+            
+            if v == 0 {
+                write!(f, "{} ", &self.a[v])?;
+            }
+            if v != 0 {
+                if self.a[v] < 0.0 && self.a[v-1] < 0.0{
+                
+                    write!(f, "{} * x^{} ", &self.a[v] * -1.0,&v)?;
+                }
+                if self.a[v] < 0.0 && self.a[v-1] >= 0.0{
+                
+                    write!(f, "- {} * x^{}  + ", &self.a[v] * -1.0,&v)?;
+                }
+                if self.a[v] >= 0.0 && self.a[v-1] < 0.0{
+                
+                    write!(f, "{} * x^{} ", &self.a[v],&v)?;
+                }/* 
+                if self.a[v] == 0.0{
+                    write!(f, "")?;
+                }*/
+                else{
+                    write!(f, "{} * x^{}  + ", &self.a[v],&v)?;
+                }
+            }
+        }
+        Ok(())
+    }
 }
 
 
@@ -106,16 +140,17 @@ impl Mul for Poly{
 
 fn main() {
     let wiel1 = Poly{a: vec![1.0, 2.0]};
-    let wiel2 = Poly{a: vec![4.0, -3.0, 1.0]};
+    let wiel2 = Poly{a: vec![4.0, -3.0, 0.0 ,-1.0, 0.0]};
 
     println!("{}", &wiel1.eval(2.0));
     println!("W1 = {:?}", &wiel1.a);
     println!("W2 = {:?}", &wiel2.a);
+    println!("W2= {}", &wiel2);
 
     let wiel3 = wiel1.clone() - wiel2.clone();
     
-    println!("{:?}", &wiel3.a);
+    //println!("{:?}", &wiel3.a);
 
     let wiel4 = wiel1 * wiel2;
-    println!("{:?}", &wiel4.a);
+    //println!("{}", &wiel4);
 }
