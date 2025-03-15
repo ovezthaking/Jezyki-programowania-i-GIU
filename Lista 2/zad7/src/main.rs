@@ -22,26 +22,40 @@ impl fmt::Display for Poly{
             
             
             if v == 0 {
-                write!(f, "{} ", &self.a[v])?;
+                if self.a[v] < 0.0 {
+                    write!(f, "- {} ", &self.a[v]*-1.0)?;
+                }
+                if self.a[v] > 0.0 {
+                    write!(f, "{} ", &self.a[v])?;
+                }
+                else{
+                    write!(f,"")?;
+                }
+                
             }
             if v != 0 {
-                if self.a[v] < 0.0 && self.a[v-1] < 0.0{
-                
-                    write!(f, "{} * x^{} ", &self.a[v] * -1.0,&v)?;
+                if self.a[v] < 0.0 {
+                    if self.a[v-1] <= 0.0{
+                        write!(f, "- {} * x^{} ", &self.a[v] * -1.0,&v)?;
+                    }
+                    else{
+                        write!(f, "- {} * x^{} + ", &self.a[v] * -1.0,&v)?;
+                    }
                 }
-                if self.a[v] < 0.0 && self.a[v-1] >= 0.0{
-                
-                    write!(f, "- {} * x^{}  + ", &self.a[v] * -1.0,&v)?;
+                if self.a[v] > 0.0 {
+                    if self.a[v-1] < 0.0{
+                        write!(f, "{} * x^{} ", &self.a[v],&v)?;
+                    }
+                    else {
+                        write!(f, "{} * x^{} + ", &self.a[v],&v)?;
+                    }
                 }
-                if self.a[v] >= 0.0 && self.a[v-1] < 0.0{
-                
-                    write!(f, "{} * x^{} ", &self.a[v],&v)?;
-                }/* 
+                /* 
                 if self.a[v] == 0.0{
                     write!(f, "")?;
                 }*/
                 else{
-                    write!(f, "{} * x^{}  + ", &self.a[v],&v)?;
+                    write!(f,"")?;
                 }
             }
         }
@@ -61,7 +75,11 @@ impl Poly{
         }
         sum
     }
+    fn print_eval(&self, x:f32){
+        println!("Wartość wielomianu w punkcie {} wynosi: {}", x, self.eval(x));
+    }
 }
+
 
 
 impl Add for Poly{
@@ -140,17 +158,24 @@ impl Mul for Poly{
 
 fn main() {
     let wiel1 = Poly{a: vec![1.0, 2.0]};
-    let wiel2 = Poly{a: vec![4.0, -3.0, 0.0 ,-1.0, 0.0]};
+    let wiel2 = Poly{a: vec![4.0, -3.0, 0.0 ,-1.0]};
 
-    println!("{}", &wiel1.eval(2.0));
-    println!("W1 = {:?}", &wiel1.a);
-    println!("W2 = {:?}", &wiel2.a);
-    println!("W2= {}", &wiel2);
+    let x1 = 2.0;
+    let x2 = 4.0;
 
-    let wiel3 = wiel1.clone() - wiel2.clone();
-    
-    //println!("{:?}", &wiel3.a);
+    wiel1.print_eval(x1);
+    wiel2.print_eval(x2);
 
-    let wiel4 = wiel1 * wiel2;
-    //println!("{}", &wiel4);
+    println!("\nW1(x) = {}", &wiel1);
+    println!{"W2(x) = {}", &wiel2};
+
+    println!("\nW1(x) + W2(x) = {}", wiel1.clone() + wiel2.clone());
+
+    //let wieltest = wiel1.clone() - wiel2.clone();
+    println!("\nW1(x) - W2(x) = {}", wiel1.clone() - wiel2.clone());
+    //print!("test = {:?}", wieltest.a);
+    println!("W2(x) - W1(x) = {}", wiel2.clone() - wiel1.clone());
+
+    println!("\nW1(x) * W2(x) = {}", wiel1 * wiel2);
+
 }
