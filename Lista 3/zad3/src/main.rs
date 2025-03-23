@@ -5,12 +5,12 @@ struct Osoba{
     imie: String,
     nazwisko: String,
     wzrost: i16,
-    waga: i8,
+    waga: i16,
     data_urodzenia: String,
 }
 
 impl Osoba{
-    fn nowa_osoba(imie: String, nazwisko: String, wzrost: i16, waga: i8, data_urodzenia: String) -> Osoba{
+    fn nowa_osoba(imie: String, nazwisko: String, wzrost: i16, waga: i16, data_urodzenia: String) -> Osoba{
         Osoba{
             imie,
             nazwisko,
@@ -19,6 +19,7 @@ impl Osoba{
             data_urodzenia,
         }
     }
+
 }
 
 fn example_osobas() -> Vec<Osoba>{
@@ -65,12 +66,54 @@ fn sort_age(osoby: &mut Vec<Osoba>) {
     osoby.sort_by_key(| osoba | Reverse(osoba.data_urodzenia.clone()));
 }
 
+fn wzrost_range(osoby:&Vec<Osoba>, a:i16, b:i16) -> Vec<Osoba>{
+    let mut w_range = vec![];
+    //let mut i = 0;
+    
+    for osoba in osoby{
+        if osoba.wzrost >= a && osoba.wzrost <=b{
+            w_range.push(osoba.clone());
+        }
+    }
+    w_range
+
+    /* 
+    loop{
+        if i > osoby.len(){
+            break w_range;
+        }
+        if( < a){
+
+        }
+        i += 1;
+    }*/
+
+}
+
+
+fn masa_info(osoby: &Vec<Osoba>){
+    let mut sum = 0;
+    let mut i = 0;
+    loop {
+        if i >= osoby.len(){
+            break;
+        }
+        sum += osoby[i].waga;
+        i+=1;
+    }
+    println!("Łączna masa wszystkich osób wynosi: {}", sum);
+
+    let avg = sum as f64/osoby.len() as f64;
+
+    println!("Średnia ich masa wynosi: {}", avg);
+}
+
 
 fn main() {
     let mut osoby = example_osobas();
     sort_alph(&mut osoby);
     
-    for osoba in osoby.clone(){
+    for osoba in &osoby{
         println!("{:?}", &osoba);
     }
 
@@ -78,10 +121,17 @@ fn main() {
 
     sort_age(&mut osoby);
 
-    for osoba in osoby.clone(){
+    for osoba in &osoby{
         println!("{:?}", &osoba);
     }
 
+    let przedzial = wzrost_range(&osoby, 160, 170);
+    println!("\n\n\n");
+    for osoba in przedzial{
+        println!("{:?}", &osoba);
+    }
     
-    
+    println!("\n\n\n");
+
+    masa_info(&osoby);
 }
