@@ -10,9 +10,9 @@ checksum = "7b7e4c2464d97fe331d41de9d5db0def0a96f4d823b8b32a2efd503578988973"
 
 [[package]]
 name = "gmp-mpfr-sys"
-version = "1.6.4"
+version = "1.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0205cd82059bc63b63cf516d714352a30c44f2c74da9961dfda2617ae6b5918"
+checksum = "c66d61197a68f6323b9afa616cf83d55d69191e1bf364d4eb7d35ae18defe776"
 dependencies = [
  "libc",
  "windows-sys",
@@ -44,9 +44,9 @@ dependencies = [
 
 [[package]]
 name = "windows-sys"
-version = "0.52.0"
+version = "0.59.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "282be5f36a8ce781fad8c8ae18fa3f9beff57ec1b52cb3de0789201425d9a33d"
+checksum = "1e38bc4d79ed67fd075bcc251a1c39b32a1776bbe92e5bef1f0bf1f8c531853b"
 dependencies = [
  "windows-targets",
 ]
