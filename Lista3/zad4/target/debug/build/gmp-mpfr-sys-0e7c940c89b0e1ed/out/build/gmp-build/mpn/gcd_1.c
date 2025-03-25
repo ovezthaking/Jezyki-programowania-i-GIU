@@ -1,1 +1,0 @@
-../../gmp-src/mpn/generic/gcd_1.c

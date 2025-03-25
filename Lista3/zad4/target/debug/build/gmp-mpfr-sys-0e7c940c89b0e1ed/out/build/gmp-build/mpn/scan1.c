@@ -1,1 +1,0 @@
-../../gmp-src/mpn/generic/scan1.c

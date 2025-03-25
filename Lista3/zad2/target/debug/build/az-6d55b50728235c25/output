@@ -1,6 +1,0 @@
-$ mkdir -p "/home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista 3/zad2/target/debug/build/az-6d55b50728235c25/out/try_track_caller"
-$ cd "/home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista 3/zad2/target/debug/build/az-6d55b50728235c25/out/try_track_caller"
-$ printf '%s' "// try_tra"... > "/home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista 3/zad2/target/debug/build/az-6d55b50728235c25/out/try_track_caller/try_track_caller.rs"
-$ cd "/home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista 3/zad2/target/debug/build/az-6d55b50728235c25/out/try_track_caller" && "rustc" "try_track_caller.rs" "--emit=dep-info,metadata" >& /dev/null
-cargo:rustc-cfg=track_caller
-$ rm -r "/home/oliwer/.ssh/REPOS/Jezyki-programowania-i-GIU/Lista 3/zad2/target/debug/build/az-6d55b50728235c25/out/try_track_caller"

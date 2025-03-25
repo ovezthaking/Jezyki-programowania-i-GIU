@@ -1,1 +1,0 @@
-../../gmp-src/mpn/generic/sqrtrem.c

@@ -1,1 +1,0 @@
-../../gmp-src/mpn/generic/divis.c

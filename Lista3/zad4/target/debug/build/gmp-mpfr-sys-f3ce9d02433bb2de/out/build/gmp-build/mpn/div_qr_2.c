@@ -1,1 +1,0 @@
-../../gmp-src/mpn/generic/div_qr_2.c
