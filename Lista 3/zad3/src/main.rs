@@ -91,22 +91,36 @@ fn wzrost_range(osoby:&Vec<Osoba>, a:i16, b:i16) -> Vec<Osoba>{
 }
 
 
-fn masa_info(osoby: &Vec<Osoba>){
-    let mut sum = 0;
+fn masa_info(osoby: &Vec<Osoba>) -> (f64, f64){
+    let mut sum = 0.0;
     let mut i = 0;
     loop {
         if i >= osoby.len(){
             break;
         }
-        sum += osoby[i].waga;
+        sum += osoby[i].waga as f64;
         i+=1;
     }
-    println!("Łączna masa wszystkich osób wynosi: {}", sum);
+    //println!("Łączna masa wszystkich osób wynosi: {}", sum);
 
-    let avg = sum as f64/osoby.len() as f64;
+    let avg = sum/osoby.len() as f64;
 
-    println!("Średnia ich masa wynosi: {}", avg);
+    //println!("Średnia ich masa wynosi: {}", avg);
+    (sum, avg)
 }
+
+
+fn sum_avg<F>(osoby: &Vec<Osoba>, f: F) -> (f64, f64)
+where F:Fn(&Osoba) -> f64 {
+    let mut sum = 0.0;
+    for osoba in osoby{
+        sum += f(osoba);
+    }
+    let avg = sum/osoby.len() as f64;
+    (sum,avg)
+}
+
+
 
 
 fn main() {
@@ -133,5 +147,17 @@ fn main() {
     
     println!("\n\n\n");
 
-    masa_info(&osoby);
+    let (masa_sum, masa_avg) = masa_info(&osoby);
+    println!("Śuma mas wynosoi {}, a ich średnia {}", masa_sum, masa_avg);
+
+    let (wiek_sum, wiek_avg) = sum_avg(&osoby, |osoba| {
+        let data: String = String::from(&osoba.data_urodzenia);
+        let rok = &data[..4];
+        let rok_f64: f64 = (*rok).parse().unwrap();
+        let obecny = 2025.0;
+        obecny-rok_f64
+    });
+
+    println!("\nSuma wieku osób wynosi {}, a ich średnia {}", wiek_sum, wiek_avg);
+
 }
