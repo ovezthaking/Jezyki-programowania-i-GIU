@@ -1,0 +1,1 @@
+std::result::Result<<S as serde::Serializer>::Ok, serde_json::Error>

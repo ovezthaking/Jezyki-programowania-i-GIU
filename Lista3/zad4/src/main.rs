@@ -1,4 +1,6 @@
 use std::cmp::Reverse;
+use std::fs::File;
+use serde_json::to_writer;
 use serde::ser::{Serialize, Serializer, SerializeStruct};
 
 
@@ -153,4 +155,6 @@ fn main() {
 
     println!("\nSuma wieku osób wynosi {}, a ich średnia {}", wiek_sum, wiek_avg);
 
+    let file = File::create("osoby.json").expect("Can't create a file");
+    to_writer(file, &osoby).expect("Can't save");
 }
