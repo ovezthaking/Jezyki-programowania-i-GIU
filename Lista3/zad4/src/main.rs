@@ -1,7 +1,9 @@
-use std::cmp::Reverse;
+use std::{any::Any, cmp::Reverse};
 use std::fs::File;
-use serde_json::to_writer;
-use serde::ser::{Serialize, Serializer, SerializeStruct};
+use serde_json::{from_reader, to_writer};
+use serde::{ser::{Serialize, SerializeStruct, Serializer}, Deserialize};
+use serde::de::*;
+use std::fmt;
 
 
 #[derive(Debug, Clone)]
@@ -36,8 +38,76 @@ impl Serialize for Osoba {
         state.serialize_field("Nazwisko", &self.nazwisko)?;
         state.serialize_field("Wzrost", &self.wzrost)?;
         state.serialize_field("Waga", &self.waga)?;
-        state.serialize_field("Data urodzenia", &self.data_urodzenia)?;
+        state.serialize_field("DataUrodzenia", &self.data_urodzenia)?;
         state.end()
+    }
+}
+
+impl<'de> Deserialize<'de> for Osoba {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // Definicja pól, które będą deserializowane
+        //const FIELDS: &[&str] = &["Imię", "Nazwisko", "Wzrost", "Waga", "Data urodzenia"];
+
+        // Użycie serde do deserializacji struktury
+        #[derive(Deserialize)]
+        #[serde(field_identifier, rename_all = "PascalCase")]
+        enum Field {
+            Imię,
+            Nazwisko,
+            Wzrost,
+            Waga,
+            DataUrodzenia,
+        }
+
+        struct OsobaVisitor;
+
+        impl<'de> Visitor<'de> for OsobaVisitor {
+            type Value = Osoba;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("struct Osoba")
+            }
+
+            fn visit_map<V>(self, mut map: V) -> Result<Osoba, V::Error>
+            where
+                V: MapAccess<'de>,
+            {
+                let mut imie = None;
+                let mut nazwisko = None;
+                let mut wzrost = None;
+                let mut waga = None;
+                let mut data_urodzenia = None;
+
+                while let Some(key) = map.next_key()? {
+                    match key {
+                        Field::Imię => imie = Some(map.next_value()?),
+                        Field::Nazwisko => nazwisko = Some(map.next_value()?),
+                        Field::Wzrost => wzrost = Some(map.next_value()?),
+                        Field::Waga => waga = Some(map.next_value()?),
+                        Field::DataUrodzenia => data_urodzenia = Some(map.next_value()?),
+                    }
+                }
+
+                let imie = imie.ok_or_else(|| serde::de::Error::missing_field("Imię"))?;
+                let nazwisko = nazwisko.ok_or_else(|| serde::de::Error::missing_field("Nazwisko"))?;
+                let wzrost = wzrost.ok_or_else(|| serde::de::Error::missing_field("Wzrost"))?;
+                let waga = waga.ok_or_else(|| serde::de::Error::missing_field("Waga"))?;
+                let data_urodzenia = data_urodzenia.ok_or_else(|| serde::de::Error::missing_field("Data urodzenia"))?;
+
+                Ok(Osoba {
+                    imie,
+                    nazwisko,
+                    wzrost,
+                    waga,
+                    data_urodzenia,
+                })
+            }
+        }
+        const FIELDS:&[&str] = &["Imię", "Nazwisko", "Wzrost", "Waga", "DataUrodzenia"];
+        deserializer.deserialize_struct("Osoba", FIELDS, OsobaVisitor)
     }
 }
 
@@ -157,4 +227,9 @@ fn main() {
 
     let file = File::create("osoby.json").expect("Can't create a file");
     to_writer(file, &osoby).expect("Can't save");
+
+    let file = File::open("osoby.json").expect("Can't open");
+    let osoby_frf:Vec<Osoba> = from_reader(file).expect("Can't set a variable");
+
+    println!("\nOsoby zaimportowane z dysku:\n{:?}", osoby_frf);
 }
