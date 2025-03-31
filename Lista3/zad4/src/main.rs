@@ -1,9 +1,8 @@
-use std::{any::Any, cmp::Reverse};
+use std::cmp::Reverse;
 use std::fs::File;
 use serde_json::{from_reader, to_writer};
 use serde::{ser::{Serialize, SerializeStruct, Serializer}, Deserialize};
 use serde::de::*;
-use std::fmt;
 
 
 #[derive(Debug, Clone)]
@@ -25,7 +24,6 @@ impl Osoba{
             data_urodzenia,
         }
     }
-
 }
 
 impl Serialize for Osoba {
@@ -187,6 +185,29 @@ where F:Fn(&Osoba) -> f64 {
     (sum,avg)
 }
 
+fn list_all(osoby: &Vec<Osoba>){
+    if osoby.is_empty() {
+        println!("Lista osób jest pusta");
+    }
+    else {
+        println!("Lista osób: ");
+        for osoba in osoby {
+            println!("{:?}", &osoba);
+        }
+        print!("\n");
+    }
+}
+
+fn save(osoby: &Vec<Osoba>){
+    let file = File::create("osoby.json").expect("can't create a file");
+    to_writer(file, &osoby).expect("Can't save any data");
+}
+
+fn load() -> Vec<Osoba>{
+    let file = File::open("osoby.json").expect("Can't open a file");
+    let osoby:Vec<Osoba> = from_reader(file).expect("Can't set a variable");
+    osoby
+}
 
 fn main() {
     let mut osoby = example_osobas();
@@ -225,11 +246,12 @@ fn main() {
 
     println!("\nSuma wieku osób wynosi {}, a ich średnia {}", wiek_sum, wiek_avg);
 
-    let file = File::create("osoby.json").expect("Can't create a file");
-    to_writer(file, &osoby).expect("Can't save");
+    save(&osoby);
 
-    let file = File::open("osoby.json").expect("Can't open");
-    let osoby_frf:Vec<Osoba> = from_reader(file).expect("Can't set a variable");
+    let osoby_frf:Vec<Osoba> = load();
 
     println!("\nOsoby zaimportowane z dysku:\n{:?}", osoby_frf);
+
+    print!("\n\n");
+    list_all(&osoby_frf);
 }
