@@ -157,13 +157,13 @@ fn policz(tab: &Vec<i32>) -> (i32,i32){
     let mut d = 0;
     let mut u = 0;
 
-    for i in tab{
+    for &i in tab{
         //print!("{}, ", i);    
 
-        if *i < 0{
+        if i < 0{
             u += 1;
         }
-        if *i > 0{
+        if i > 0{
             d += 1;
         }
     }
