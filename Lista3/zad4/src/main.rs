@@ -209,6 +209,12 @@ fn load() -> Vec<Osoba>{
     osoby
 }
 
+fn add(osoby: &mut Vec<Osoba>, osoba: Osoba){
+    osoby.push(osoba);
+    save(&osoby);
+}
+
+/* 
 fn main() {
     let mut osoby = example_osobas();
     sort_alph(&mut osoby);
@@ -254,4 +260,69 @@ fn main() {
 
     print!("\n\n");
     list_all(&osoby_frf);
+}
+*/
+
+fn main() {
+    let mut osoby = example_osobas();
+    save(&osoby);
+    
+    //list_all(&osoby);
+
+    let mut running = true;
+
+    while running {
+        osoby = load();
+        let mut choice = String::new();
+        println!("Dostępne opcje: list_all(), add(), remove(), find(), exit()");
+        let stdin = std::io::stdin();
+        stdin.read_line(&mut choice).expect("Failed to read line (choice)");
+        choice = choice.trim().to_string();
+        println!("Wybrano: {}", choice);
+
+        match choice.as_str() {
+            "list_all()" =>{
+                list_all(&osoby);
+            },
+            "exit()" => {
+                println!("Zamykanie programu");
+                running = false;
+            }
+            "add()" => {
+                let mut imie = String::new();
+                println!("Podaj imię:");
+                stdin.read_line(&mut imie).expect("Failed to read line (imie)");
+                let mut nazwisko = String::new();
+                println!("Podaj nazwisko:");
+                stdin.read_line(&mut nazwisko).expect("Failed to read line (nazwisko)");
+                let mut wzrost = String::new();
+                println!("Podaj wzrost:");
+                stdin.read_line(&mut wzrost).expect("Failed to read line (wzrost)");
+                let mut waga = String::new();
+                println!("Podaj wagę:");
+                stdin.read_line(&mut waga).expect("Failed to read line (waga)");
+                let mut data_urodzenia = String::new();
+                println!("Podaj datę urodzenia (rrrr-mm-dd):");
+                stdin.read_line(&mut data_urodzenia).expect("Failed to read line (data_urodzenia)");
+
+                let nowa_osoba = Osoba::nowa_osoba(
+                    imie.trim().to_string(),
+                    nazwisko.trim().to_string(),
+                    wzrost.trim().parse().unwrap(),
+                    waga.trim().parse().unwrap(),
+                    data_urodzenia.trim().to_string(),
+                );
+                println!("\nDodano nową osobę: {:?}", &nowa_osoba);
+                add(&mut osoby, nowa_osoba);
+                
+            },
+            "remove()" => {
+
+            },
+            "find()" => {
+
+            },
+            _ => println!("Nieznana opcja: {}", choice),
+        }
+    }
 }
