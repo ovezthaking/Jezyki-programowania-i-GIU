@@ -225,54 +225,29 @@ fn remove(osoby: &mut Vec<Osoba>, index:usize ){
     osoby.remove(index);
     save(&osoby);
 }
-/* 
-fn main() {
-    let mut osoby = example_osobas();
-    sort_alph(&mut osoby);
-    
-    for osoba in &osoby{
-        println!("{:?}", &osoba);
+
+
+fn find(osoby: &Vec<Osoba>) {
+    let mut fragment = String::new();
+    println!("Podaj fragment nazwiska do wyszukania:");
+    let stdin = std::io::stdin();
+    stdin.read_line(&mut fragment).expect("Failed to read line (fragment)");
+    let fragment = fragment.trim().to_lowercase();
+
+    let znalezione: Vec<&Osoba> = osoby
+        .iter()
+        .filter(|osoba| osoba.nazwisko.to_lowercase().contains(&fragment))
+        .collect();
+
+    if znalezione.is_empty() {
+        println!("Nie znaleziono osób pasujących do podanego fragmentu nazwiska.");
+    } else {
+        println!("Znalezione osoby:");
+        for osoba in znalezione {
+            println!("{:?}", osoba);
+        }
     }
-
-    println!("\n\n\n");
-
-    sort_age(&mut osoby);
-
-    for osoba in &osoby{
-        println!("{:?}", &osoba);
-    }
-
-    let przedzial = wzrost_range(&osoby, 160, 170);
-    println!("\n\n\n");
-    for osoba in przedzial{
-        println!("{:?}", &osoba);
-    }
-    
-    println!("\n\n\n");
-
-    let (masa_sum, masa_avg) = masa_info(&osoby);
-    println!("Śuma mas wynosoi {}, a ich średnia {}", masa_sum, masa_avg);
-
-    let (wiek_sum, wiek_avg) = sum_avg(&osoby, |osoba| {
-        let data: String = String::from(&osoba.data_urodzenia);
-        let rok = &data[..4];
-        let rok_f64: f64 = (*rok).parse().unwrap();
-        let obecny = 2025.0;
-        obecny-rok_f64
-    });
-
-    println!("\nSuma wieku osób wynosi {}, a ich średnia {}", wiek_sum, wiek_avg);
-
-    save(&osoby);
-
-    let osoby_frf:Vec<Osoba> = load();
-
-    println!("\nOsoby zaimportowane z dysku:\n{:?}", osoby_frf);
-
-    print!("\n\n");
-    list_all(&osoby_frf);
 }
-*/
 
 fn main() {
 
@@ -356,7 +331,7 @@ fn main() {
                 }
             },
             "find()" => {
-
+                find(&osoby);
             },
             _ => println!("Nieznana opcja: {}", choice),
         }
