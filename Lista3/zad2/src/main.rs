@@ -25,13 +25,21 @@ fn fibo_fast(n: u64) -> Integer {
     if n < 2 {
         return Integer::from(n);
     }
-    power(
+    let A(fib_n, _, _) = power(
         A(Integer::from(1), Integer::from(1), Integer::from(0)),
         n - 1,
     );
-    Integer::from(0)
+    fib_n
 }
 
 fn main() {
-    println!("{}", fibo_fast(1000_000_000)); // czekaj około 1 minuty
+    let fib = fibo_fast(1_000_000);
+    let digits = fib.to_string();
+    let pos = 10_000;
+
+    if digits.len() >= pos {
+        println!("Cyfra nr 10_000: {}", digits.chars().nth(pos - 1).unwrap());
+    } else {
+        println!("Fib(1_000_000) ma tylko {} cyfr", digits.len());
+    }
 }
