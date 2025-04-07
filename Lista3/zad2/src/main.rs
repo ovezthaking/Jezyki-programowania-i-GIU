@@ -29,7 +29,7 @@ fn fibo_fast(n: u64) -> Integer {
         A(Integer::from(1), Integer::from(1), Integer::from(0)),
         n - 1,
     );
-    0
+    Integer::from(0)
 }
 
 fn main() {

@@ -3,6 +3,7 @@ use std::fs::File;
 use serde_json::{from_reader, to_writer};
 use serde::{ser::{Serialize, SerializeStruct, Serializer}, Deserialize};
 use serde::de::*;
+use std::path::Path;
 
 
 #[derive(Debug, Clone)]
@@ -185,23 +186,27 @@ where F:Fn(&Osoba) -> f64 {
     (sum,avg)
 }
 
+
+
 fn list_all(osoby: &Vec<Osoba>){
     if osoby.is_empty() {
         println!("Lista osób jest pusta");
     }
     else {
         println!("Lista osób: ");
-        for osoba in osoby {
+        for osoba in osoby.iter().enumerate() {
             println!("{:?}", &osoba);
         }
         print!("\n");
     }
 }
 
+
 fn save(osoby: &Vec<Osoba>){
     let file = File::create("osoby.json").expect("can't create a file");
     to_writer(file, &osoby).expect("Can't save any data");
 }
+
 
 fn load() -> Vec<Osoba>{
     let file = File::open("osoby.json").expect("Can't open a file");
@@ -209,11 +214,17 @@ fn load() -> Vec<Osoba>{
     osoby
 }
 
+
 fn add(osoby: &mut Vec<Osoba>, osoba: Osoba){
     osoby.push(osoba);
     save(&osoby);
 }
 
+
+fn remove(osoby: &mut Vec<Osoba>, index:usize ){
+    osoby.remove(index);
+    save(&osoby);
+}
 /* 
 fn main() {
     let mut osoby = example_osobas();
@@ -264,7 +275,17 @@ fn main() {
 */
 
 fn main() {
-    let mut osoby = example_osobas();
+
+    let mut osoby:Vec<Osoba>;
+    let path = Path::new("osoby.json");
+    if path.exists() {
+        osoby = load();
+    }
+    else{
+        osoby = example_osobas();
+    }
+    
+
     save(&osoby);
     
     //list_all(&osoby);
@@ -317,7 +338,22 @@ fn main() {
                 
             },
             "remove()" => {
-
+                list_all(&osoby);
+                println!("Podaj index osoby, którą chcesz usunąć z listy powyżej: ");
+                let mut index = String::new();
+                stdin.read_line(&mut index).expect("Falied to read index");
+                let index_usize: usize = index.trim().parse().expect("Failed to parse");
+                
+                if index_usize >= osoby.len(){
+                    println!("Index osoby za duży, osoba o takim indexie nie istnieje");
+                }
+                else if index_usize < osoby.len(){
+                    println!("Usuwanie osoby {:?} ...", &osoby[index_usize]);
+                    remove(&mut osoby, index_usize);
+                }
+                else {
+                    println!("Nie jest to liczba -_-");
+                }
             },
             "find()" => {
 
