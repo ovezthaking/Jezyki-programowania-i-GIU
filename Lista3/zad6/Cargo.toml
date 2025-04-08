@@ -1,6 +1,8 @@
 [package]
-name = "zad5"
+name = "zad6"
 version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+flo_draw = "0.3"
+flo_canvas = "0.3"
