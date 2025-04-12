@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
 use::flo_canvas::*;
 use flo_draw::*;
+use std::thread;
 
 trait Fig {
     fn save(&self, w: &mut dyn Write) -> io::Result<()>;
@@ -30,6 +31,32 @@ impl Fig for Circle {
     fn as_string(&self) -> String {
         format!("Circle({})", self.radius)
     }
+
+    fn paint(&self) {
+        let radius = self.radius; 
+        with_2d_graphics(move || {
+            
+            let canvas = create_drawing_window("Circle");
+
+            
+            canvas.draw(|gc| {
+                
+                gc.canvas_height(1000.0);
+                gc.center_region(0.0, 0.0, 1000.0, 1000.0);
+
+                
+                gc.new_path();
+                gc.circle(500.0, 500.0, radius as f32); 
+
+                gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
+                gc.fill();
+
+                gc.line_width(6.0);
+                gc.stroke_color(Color::Rgba(0.0, 0.0, 0.0, 1.0));
+                gc.stroke();
+            });
+        });
+    }
 }
 
 impl Fig for Square {
@@ -39,6 +66,32 @@ impl Fig for Square {
 
     fn as_string(&self) -> String {
         format!("Square({})", self.side)
+    }
+
+    fn paint(&self) {
+        let side = self.side; 
+        with_2d_graphics(move || {
+            
+            let canvas = create_drawing_window("Square");
+
+            
+            canvas.draw(|gc| {
+                
+                gc.canvas_height(1000.0);
+                gc.center_region(0.0, 0.0, 1000.0, 1000.0);
+
+                
+                gc.new_path();
+                gc.rect(500.0, 500.0, side as f32, side as f32); 
+
+                gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
+                gc.fill();
+
+                gc.line_width(6.0);
+                gc.stroke_color(Color::Rgba(0.0, 0.0, 0.0, 1.0));
+                gc.stroke();
+            });
+        });
     }
 }
 
@@ -50,6 +103,34 @@ impl Fig for Rectangle {
     fn as_string(&self) -> String {
         format!("Rectangle({}, {})", self.a, self.b)
     }
+
+    fn paint(&self) {
+        let a = self.a; 
+        let b = self.b; 
+    
+        with_2d_graphics(move || {
+            // Create a window
+            let canvas = create_drawing_window("Rectangle");
+    
+        
+            canvas.draw(|gc| {
+                
+                gc.canvas_height(1000.0);
+                gc.center_region(0.0, 0.0, 1000.0, 1000.0);
+    
+                
+                gc.new_path();
+                gc.rect(500.0, 500.0, a as f32, b as f32); 
+    
+                gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
+                gc.fill();
+    
+                gc.line_width(6.0);
+                gc.stroke_color(Color::Rgba(0.0, 0.0, 0.0, 1.0));
+                gc.stroke();
+            });
+        });
+    }
 }
 
 fn save_figures(figures: &[Box<dyn Fig>], path: &str) -> io::Result<()> {
@@ -59,6 +140,7 @@ fn save_figures(figures: &[Box<dyn Fig>], path: &str) -> io::Result<()> {
     }
     Ok(())
 }
+
 
 fn load_figures(path: &str) -> io::Result<Vec<Box<dyn Fig>>> {
     let file = File::open(path)?;
@@ -93,27 +175,23 @@ fn load_figures(path: &str) -> io::Result<Vec<Box<dyn Fig>>> {
     Ok(figures)
 }
 
+
+
 pub fn main() {
-    with_2d_graphics(|| {
-        // Create a window
-        let canvas      = create_drawing_window("Circle");
+    let circle = Circle { radius: 50.0 };
+    let square = Square { side: 100.0 };
+    let rectangle = Rectangle { a: 150.0, b: 300.0 };
 
-        // Draw a circle
-        canvas.draw(|gc| {
-            // Set up the canvas
-            gc.canvas_height(1000.0);
-            gc.center_region(0.0, 0.0, 1000.0, 1000.0);
+    let figures: Vec<Box<dyn Fig>> = vec![Box::new(circle), Box::new(square), Box::new(rectangle)];
+    save_figures(&figures, "figures.txt").unwrap();
 
-            // Draw a circle
-            gc.new_path();
-            gc.circle(500.0, 500.0, 250.0);
+    let loaded_figures = load_figures("figures.txt").unwrap();
 
-            gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
-            gc.fill();
+    for fig in &loaded_figures {
+        println!("{}", fig.as_string());
+    }
 
-            gc.line_width(6.0);
-            gc.stroke_color(Color::Rgba(0.0, 0.0, 0.0, 1.0));
-            gc.stroke();
-        });
-    });
+    for fig in loaded_figures {
+        fig.paint();
+    }
 }
