@@ -1,18 +1,12 @@
-/*
-Zaimplementuj dla wielomianów trait std::fmt::Display.
 
-Dobra to myślę, że taki wektor chyba musi być w formie [...,a,b,c], gdzie W(x) = ... + x^2 * a + x^1 * b + x * c
-
-
-A może tak: W(x) = a* x^0 + b * x^1 + c * x^2 ...
-i niech forma będzie [a,b,c,...]
-
-
-Lista 3 zad 1 
-Trzeba zrobić From i przekonwertować to tak żrby dało sie zrobic w np f64 , chyba From<f64> 
-*/
 use std::{ops::{Add, Mul, Sub}, vec};
 use std::fmt;
+
+#[derive(Clone)]
+struct Polyf32{
+    a: Vec<f32> 
+}
+
 
 #[derive(Clone)]
 struct Poly<T>{
@@ -20,9 +14,58 @@ struct Poly<T>{
 }
 
 
-impl fmt::Display for Poly<f32>{
+impl<T> Poly<T>
+where
+    T: Into<f64> + From<f64> + Copy,
+{
+    fn eval(&self, x: T) -> T {
+        let mut sum = 0.0;
+        for (i, &coeff) in self.a.iter().enumerate() {
+            sum += coeff.into() * x.into().powi(i as i32);
+        }
+        T::from(sum) 
+    }
+}
+
+/* 
+impl<T> Add for Poly<T>
+where
+    T: Add<Output = T> + From<f64>,
+{
+    type Output = Self;
+
+    fn add(self, other: Self) -> Self {
+        let mut output_wek;
+        if self.a.len() >= other.a.len() {
+            output_wek = vec![0.0; self.a.len()];
+            for i in 0..self.a.len() {
+                output_wek[i] += self.a[i];
+            }
+            for i in 0..other.a.len() {
+                output_wek[i] += other.a[i];
+            }
+        } else {
+            output_wek = vec![0.0; other.a.len()];
+            for i in 0..other.a.len() {
+                output_wek[i] += other.a[i];
+            }
+            for i in 0..self.a.len() {
+                output_wek[i] += self.a[i];
+            }
+        }
+        Poly {
+            a: output_wek,
+        }
+    }
+}
+
+*/
+
+impl fmt::Display for Polyf32{
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result{
         for v in (0..self.a.len()).rev(){
+            
+            
             if v == 0 {
                 if self.a[v] < 0.0 {
                     write!(f, "- {} ", &self.a[v]*-1.0)?;
@@ -33,6 +76,7 @@ impl fmt::Display for Poly<f32>{
                 else{
                     write!(f,"")?;
                 }
+                
             }
             if v != 0 {
                 if self.a[v] < 0.0 {
@@ -51,6 +95,10 @@ impl fmt::Display for Poly<f32>{
                         write!(f, "{} * x^{} + ", &self.a[v],&v)?;
                     }
                 }
+                /* 
+                if self.a[v] == 0.0{
+                    write!(f, "")?;
+                }*/
                 else{
                     write!(f,"")?;
                 }
@@ -61,30 +109,25 @@ impl fmt::Display for Poly<f32>{
 }
 
 
-impl<T> Poly<T>
-where
-    T: Copy + Into<f64> + From<f64> + std::ops::AddAssign + std::ops::Mul<Output = T>,
-{
-    fn eval(&self, x: T) -> T {
-        let mut sum = T::from(0.0);
+impl Polyf32{
+    fn eval(&self, x:f32) -> f32{
+        let mut sum = 0.0;
         let wek = &self.a;
-        for (i, &coeff) in wek.iter().enumerate() {
-            sum += coeff * T::from(x.into().powi(i as i32));
+        for i in 0..wek.len() {
+            //println!("{}", f32::powi(x, (i as i32).try_into().unwrap()));
+            sum += wek[i] * f32::powi(x, (i as i32).try_into().unwrap());
+            //println!("{} * {} ^ {} = {}", &wek[i], &x, &i, &sum);
         }
         sum
     }
-    fn print_eval(&self, x: T) {
-        println!(
-            "Wartość wielomianu w punkcie {} wynosi: {}",
-            x.into(),
-            self.eval(x).into()
-        );
+    fn print_eval(&self, x:f32){
+        println!("Wartość wielomianu w punkcie {} wynosi: {}", x, self.eval(x));
     }
 }
 
 
 
-impl Add for Poly<f32>{
+impl Add for Polyf32{
     type Output = Self;
 
     fn add(self, other: Self) -> Self{
@@ -107,13 +150,13 @@ impl Add for Poly<f32>{
                 output_wek[i] += self.a[i];
             }
         }
-        Poly {a: output_wek}
+        Polyf32 {a: output_wek}
     }
     
 }
 
 
-impl Sub for Poly<f32>{
+impl Sub for Polyf32{
     type Output = Self;
 
     fn sub(self, other: Self) -> Self{
@@ -136,12 +179,12 @@ impl Sub for Poly<f32>{
                 output_vec[i] -= other.a[i];
             }
         }
-        Poly {a: output_vec}
+        Polyf32 {a: output_vec}
     }
 }
 
 
-impl Mul for Poly<f32>{
+impl Mul for Polyf32{
     type Output = Self;
 
     fn mul(self, other:Self) -> Self{
@@ -149,33 +192,46 @@ impl Mul for Poly<f32>{
         for i in 0..self.a.len(){
             for j in 0..other.a.len(){
                 output_vec[i+j] += self.a[i] * other.a[j];
+                //println!("{}", i);
+                //print!("{}", j);
             }
         }
-        Poly {a: output_vec}
+        Polyf32 {a: output_vec}
     }
 }
 
 
 fn main() {
-    let wiel1 = Poly{a: vec![1.0, 2.0]};
-    let wiel2 = Poly{a: vec![4.0, -3.0, 0.0 ,-1.0]};
-    let wiel_i = Poly{a: vec![1, 2, 3, 4]};
+    let wiel1 = Polyf32{a: vec![1.0, 2.0]};
+    let wiel2 = Polyf32{a: vec![4.0, -3.0, 0.0 ,-1.0]};
+
+    let wiel = Poly{a: vec![1.0, 2.0]};
+
+    let p: Poly<f32> = Poly{a: vec![1.0, 2.0, 3.0]};
+    let q: Poly<f32> = Poly{a: vec![4.0, -3.0, 0.0, -1.0]};
+
+    
+
+    
+
+    let x: f32 = 2.0;
+    let eval = p.eval(q.eval(x));
+    println!("Generic EVAL: {}", eval);
 
     let x1 = 2.0;
     let x2 = 4.0;
 
-    
-    wiel_i.eval(x1);
-    //wiel2.print_eval(x2);
-
+    wiel1.print_eval(x1);
+    wiel2.print_eval(x2);
 
     println!("\nW1(x) = {}", &wiel1);
     println!{"W2(x) = {}", &wiel2};
 
     println!("\nW1(x) + W2(x) = {}", wiel1.clone() + wiel2.clone());
 
+    //let wieltest = wiel1.clone() - wiel2.clone();
     println!("\nW1(x) - W2(x) = {}", wiel1.clone() - wiel2.clone());
-    
+    //print!("test = {:?}", wieltest.a);
     println!("W2(x) - W1(x) = {}", wiel2.clone() - wiel1.clone());
 
     println!("\nW1(x) * W2(x) = {}", wiel1 * wiel2);
