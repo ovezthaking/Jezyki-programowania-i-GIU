@@ -159,12 +159,13 @@ impl Mul for Poly<f32>{
 fn main() {
     let wiel1 = Poly{a: vec![1.0, 2.0]};
     let wiel2 = Poly{a: vec![4.0, -3.0, 0.0 ,-1.0]};
+    let wiel_i = Poly{a: vec![1, 2, 3, 4]};
 
     let x1 = 2.0;
     let x2 = 4.0;
 
     
-    wiel1.print_eval(x1);
+    wiel_i.eval(x1);
     //wiel2.print_eval(x2);
 
 
