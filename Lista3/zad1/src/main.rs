@@ -16,7 +16,7 @@ use std::fmt;
 
 #[derive(Clone)]
 struct Poly<T>{
-    a: Vec<T> //wektor współczynników wielomianu
+    a: Vec<T>
 }
 
 
@@ -164,7 +164,7 @@ fn main() {
     let x2 = 4.0;
 
     
-    //wiel1.print_eval(x1);
+    wiel1.print_eval(x1);
     //wiel2.print_eval(x2);
 
 

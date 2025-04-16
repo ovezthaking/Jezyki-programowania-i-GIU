@@ -2,6 +2,7 @@ use std::fs::File;
 use std::io::{self, BufRead, BufReader, Write};
 use::flo_canvas::*;
 use flo_draw::*;
+use rand::Rng;
 
 
 
@@ -16,12 +17,22 @@ struct Circle {
 }
 
 struct Square {
-    side: f64,
+    a: f64,
 }
 
 struct Rectangle {
     a: f64,
     b: f64,
+}
+
+
+fn random_color() -> Color{
+    let mut rng = rand::rng();
+    let r = rng.random_range(0.0..=1.0); 
+    let g = rng.random_range(0.0..=1.0); 
+    let b = rng.random_range(0.0..=1.0); 
+    let a = 1.0; 
+    Color::Rgba(r, g, b, a)
 }
 
 impl Fig for Circle {
@@ -44,7 +55,7 @@ impl Fig for Circle {
             gc.new_path();
             gc.circle(500.0, 500.0, radius as f32);
 
-            gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
+            gc.fill_color(random_color());
             gc.fill();
 
             gc.line_width(6.0);
@@ -57,15 +68,15 @@ impl Fig for Circle {
 
 impl Fig for Square {
     fn save(&self, w: &mut dyn Write) -> io::Result<()> {
-        writeln!(w, "Square {}", self.side)
+        writeln!(w, "Square {}", self.a)
     }
 
     fn as_string(&self) -> String {
-        format!("Square({})", self.side)
+        format!("Square({})", self.a)
     }
 
     fn paint(&self, canvas: &DrawingTarget) {
-        let side = self.side;
+        let a = self.a;
         canvas.draw(|gc| {
             gc.clear_canvas(Color::Rgba(1.0, 1.0, 1.0, 1.0)); 
 
@@ -73,9 +84,9 @@ impl Fig for Square {
             gc.center_region(0.0, 0.0, 1000.0, 1000.0);
 
             gc.new_path();
-            gc.rect(500.0, 500.0, side as f32 + 500.0, side as f32 + 500.0);
+            gc.rect(500.0, 500.0, a as f32 + 500.0, a as f32 + 500.0);
 
-            gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
+            gc.fill_color(random_color());
             gc.fill();
 
             gc.line_width(6.0);
@@ -106,7 +117,7 @@ impl Fig for Rectangle {
             gc.new_path();
             gc.rect(5.0, 5.0, a as f32 + 5.0, b as f32 + 5.0);
 
-            gc.fill_color(Color::Rgba(0.3, 0.6, 0.8, 1.0));
+            gc.fill_color(random_color());
             gc.fill();
 
             gc.line_width(6.0);
@@ -115,6 +126,7 @@ impl Fig for Rectangle {
         });
     }
 }
+
 
 fn save_figures(figures: &[Box<dyn Fig>], path: &str) -> io::Result<()> {
     let mut file = File::create(path)?;
@@ -142,8 +154,8 @@ fn load_figures(path: &str) -> io::Result<Vec<Box<dyn Fig>>> {
                 }
             }
             ["Square", s] => {
-                if let Ok(side) = s.parse::<f64>() {
-                    figures.push(Box::new(Square { side }));
+                if let Ok(a) = s.parse::<f64>() {
+                    figures.push(Box::new(Square { a }));
                 }
             }
             ["Rectangle", a, b] => {
@@ -164,13 +176,14 @@ fn load_figures(path: &str) -> io::Result<Vec<Box<dyn Fig>>> {
 
 fn main() {
     let circle = Circle { radius: 50.0 };
-    let square = Square { side: 100.0 };
+    let square = Square { a: 100.0 };
     let rectangle = Rectangle { a: 150.0, b: 300.0 };
     let rectangle2 = Rectangle { a: 800.0, b: 600.0 };
-    let figures: Vec<Box<dyn Fig>> = vec![Box::new(circle), Box::new(square), Box::new(rectangle), Box::new(rectangle2)];
-    save_figures(&figures, "figures.txt").unwrap();
+    let circle2 = Circle {radius: 300.0};
+    let figures: Vec<Box<dyn Fig>> = vec![Box::new(circle), Box::new(square), Box::new(rectangle), Box::new(rectangle2), Box::new(circle2)];
+    save_figures(&figures, "figury.txt").unwrap();
 
-    let loaded_figures = load_figures("figures.txt").unwrap();
+    let loaded_figures = load_figures("figury.txt").unwrap();
 
     with_2d_graphics(move || {
 

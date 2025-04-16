@@ -1,4 +1,0 @@
-Circle 50
-Square 100
-Rectangle 150 300
-Rectangle 800 600
