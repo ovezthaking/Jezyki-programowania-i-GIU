@@ -19,7 +19,6 @@ impl Osoba{
             data_urodzenia,
         }
     }
-
 }
 
 fn example_osobas() -> Vec<Osoba>{

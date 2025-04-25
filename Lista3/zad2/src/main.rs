@@ -42,4 +42,5 @@ fn main() {
     } else {
         println!("Fib(1_000_000) ma tylko {} cyfr", digits.len());
     }
+    println!("{}", fib);
 }
