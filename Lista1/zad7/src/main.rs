@@ -11,10 +11,10 @@ fn main() {
         len_b: 4,
     };
     
-    let a_b = [rectangle1.len_a, rectangle1.len_b];
-    println!("\nObwód prostokąta wynosi: {}", rectangle1.obwod(a_b[0], a_b[1]));
+    //let a_b = [rectangle1.len_a, rectangle1.len_b];
+    println!("\nObwód prostokąta wynosi: {}", rectangle1.obwod());
 
-    println!("Pole prostokąta wynosi: {}", rectangle1.pole(a_b[0], a_b[1]));
+    println!("Pole prostokąta wynosi: {}", rectangle1.pole());
     
     
     println!("\nObecna pozycja prostokąta: {:?}", rectangle1.pos_c);
@@ -39,13 +39,13 @@ fn main() {
 
 impl Rectangle{
     
-    fn obwod(&self, a: i32, b: i32) -> i32{
-        let ob = 2*a.abs() + 2*b.abs();
+    fn obwod(&self) -> i32{
+        let ob = 2*self.len_a.abs() + 2*self.len_b.abs();
         ob
     }
 
-    fn pole(&self, a: i32, b: i32) -> i32{
-        let pol = a.abs()*b.abs();
+    fn pole(&self) -> i32{
+        let pol = self.len_a.abs()*self.len_b.abs();
         pol
     }
 
@@ -73,18 +73,14 @@ impl Rectangle{
 }
 #[test]
 fn test_obwod(){
-    let rect = Rectangle { pos_c: [0, 0], len_a: 0, len_b: 0 };
-    assert_eq!(rect.obwod(2, 4), 12);
-    assert_eq!(rect.obwod(10,10), 40);
-    assert_eq!(rect.obwod(5, 3), 16);
+    let rect = Rectangle { pos_c: [0, 0], len_a: 2, len_b: 4 };
+    assert_eq!(rect.obwod(), 12);
 }
 
 #[test]
 fn test_pole(){
-    let rect = Rectangle { pos_c: [0, 0], len_a: 0, len_b: 0 };
-    assert_eq!(rect.pole(2, 4), 8);
-    assert_eq!(rect.pole(10,10), 100);
-    assert_eq!(rect.pole(5, 3), 15);
+    let rect = Rectangle { pos_c: [0, 0], len_a: 5, len_b: 3 };
+    assert_eq!(rect.pole(), 15);
 }
 
 #[test]
